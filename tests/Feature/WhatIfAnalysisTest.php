@@ -29,6 +29,26 @@ class WhatIfAnalysisTest extends TestCase
             ->assertSee('border-violet-200 bg-violet-50');
     }
 
+    public function test_dashboard_pages_and_data_endpoints_aggregate_sales(): void
+    {
+        $this->createSale();
+
+        $this->get(route('dashboard.index'))->assertOk();
+        $this->get(route('dashboard.analysis'))->assertOk();
+
+        $this->getJson(route('dashboard.level1'))
+            ->assertOk()
+            ->assertJsonPath('trend.labels.0', '2025');
+
+        $this->getJson(route('dashboard.level2', ['category' => 'Furniture']))
+            ->assertOk()
+            ->assertJsonPath('trend.labels.0', '2025-01');
+
+        $this->getJson(route('dashboard.months', ['year' => '2025']))
+            ->assertOk()
+            ->assertJsonPath('trend.labels.0', '2025-01');
+    }
+
     public function test_amount_scenario_applies_filters_and_projects_profit_with_revenue(): void
     {
         $this->createSale();

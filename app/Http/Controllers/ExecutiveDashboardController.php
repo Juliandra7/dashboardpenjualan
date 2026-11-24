@@ -49,14 +49,14 @@ class ExecutiveDashboardController extends Controller
     {
         // Opsi filter dibaca dari data, jadi selalu cocok dengan isi tabel.
         $years = Sale::query()
-            ->selectRaw('SUBSTR(`year_month`, 1, 4) as y')
+            ->selectRaw('SUBSTR(year_month, 1, 4) as y')
             ->distinct()->orderBy('y')->pluck('y');
 
         $paymentModes = Sale::query()
             ->distinct()->orderBy('payment_mode')->pluck('payment_mode');
 
         $monthsByYear = Sale::query()
-            ->selectRaw('SUBSTR(`year_month`, 1, 4) as year, SUBSTR(`year_month`, 6, 2) as month')
+            ->selectRaw('SUBSTR(year_month, 1, 4) as year, SUBSTR(year_month, 6, 2) as month')
             ->distinct()->orderBy('year')->orderBy('month')->get()
             ->groupBy('year')->map(fn ($rows) => $rows->pluck('month')->values());
 
@@ -95,7 +95,7 @@ class ExecutiveDashboardController extends Controller
         // Tren tahunan sengaja TIDAK memakai filter tahun,
         // supaya garis tren tetap terlihat saat satu tahun dipilih.
         $yearly = $this->baseQuery(['year' => null] + $filters)
-            ->selectRaw('SUBSTR(`year_month`, 1, 4) as label, SUM(amount) as amount, SUM(profit) as profit')
+            ->selectRaw('SUBSTR(year_month, 1, 4) as label, SUM(amount) as amount, SUM(profit) as profit')
             ->groupBy('label')->orderBy('label')->get();
 
         $byCategory = $this->aggregate(clone $base, 'category');
@@ -157,7 +157,7 @@ class ExecutiveDashboardController extends Controller
         $base = $this->baseQuery($filters)->where('category', (string) $request->input('category'));
 
         $monthly = (clone $base)
-            ->selectRaw('`year_month` as label, SUM(amount) as amount, SUM(profit) as profit')
+            ->selectRaw('year_month as label, SUM(amount) as amount, SUM(profit) as profit')
             ->groupBy('year_month')->orderBy('year_month')->get();
 
         $bySub = $this->aggregate(clone $base, 'sub_category');
@@ -217,7 +217,7 @@ class ExecutiveDashboardController extends Controller
         // Hanya filter Payment mode yang dipakai; tahun ditentukan oleh titik yang diklik.
         $rows = $this->baseQuery(['year' => null] + $this->filters($request))
             ->where('year_month', 'like', $year.'-%')
-            ->selectRaw('`year_month` as label, SUM(amount) as amount, SUM(profit) as profit')
+            ->selectRaw('year_month as label, SUM(amount) as amount, SUM(profit) as profit')
             ->groupBy('year_month')->orderBy('year_month')->get();
 
         return response()->json([

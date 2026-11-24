@@ -14,7 +14,7 @@ class DashboardController extends Controller
             ->first();
 
         $monthlySales = Sale::query()
-            ->selectRaw('`year_month` as `period`, SUM(`amount`) as `amount`')
+            ->selectRaw('year_month as period, SUM(amount) as amount')
             ->groupBy('year_month')
             ->orderByDesc('year_month')
             ->limit(12)
