@@ -16,7 +16,7 @@
    - `APP_KEY` dari `php artisan key:generate --show` (jalankan secara lokal, lalu simpan nilainya sebagai secret di Railway).
    - `DB_CONNECTION=pgsql`
    - `DB_URL` sebagai reference ke variabel `DATABASE_URL` dari layanan PostgreSQL Railway.
-   - `RAILPACK_PHP_EXTENSIONS=pdo_pgsql,gd`
+   - `RAILPACK_PHP_EXTENSIONS=pdo_pgsql,gd,zip`
 3. Railpack mendeteksi Laravel, membangun asset dari `package.json`, dan menjalankan migrasi saat aplikasi mulai.
 4. Buat akun dashboard melalui Railway Shell dengan `php artisan dashboard:user "Nama" email@example.com`. Masukkan password saat diminta.
 5. Setelah membuat domain publik Railway, isi `APP_URL` dengan URL tersebut.
